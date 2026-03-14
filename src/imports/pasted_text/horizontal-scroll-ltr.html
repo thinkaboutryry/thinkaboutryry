@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scroll Horizontal - Derecha a Izquierda</title>
+  
+  <style>
+    /* RESET BÁSICO */
+    body {
+      margin: 0;
+      background-color: #0a0a0a; /* Fondo oscuro */
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow-x: hidden; /* Oculta la barra de scroll horizontal nativa */
+    }
+
+    /* SECCIONES DE RELLENO (Simulan el resto de tu web) */
+    .spacer {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      background: #111;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+    }
+
+    /* EL CONTENEDOR PRINCIPAL QUE SE QUEDA FIJO */
+    .horizontal-section {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden; 
+    }
+
+    /* LA "CINTA" QUE CONTIENE LAS IMÁGENES */
+    .horizontal-track {
+      display: flex;
+      /* Ya no usamos row-reverse, así que el orden natural va de derecha a izquierda */
+      gap: 40px; /* Espacio entre cada post */
+      padding: 0 50vw; /* Da espacio a los lados para que el primer post arranque en el centro */
+      width: max-content; 
+    }
+
+    /* TUS MOCKUPS CON MEDIDAS EXACTAS */
+    .ig-post {
+      width: 317px;  /* Ancho exacto que pediste */
+      height: 393px; /* Alto exacto que pediste */
+      flex-shrink: 0; /* Evita que los recuadros se aplasten */
+      border-radius: 12px; /* Esquinas redondeadas a 12px */
+      
+      background-color: #1a1a1a;
+      border: 2px solid #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #666;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      
+      /* Propiedades para cuando pongas tus imágenes */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="spacer">
+    ↓ Sigue bajando para ver el Feed ↓
+  </div>
+
+  <section class="horizontal-section">
+    <div class="horizontal-track">
+      <div class="ig-post" style="background-image: url('tu-imagen-1.jpg');">Post 1</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-2.jpg');">Post 2</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-3.jpg');">Post 3</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-4.jpg');">Post 4</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-5.jpg');">Post 5</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-6.jpg');">Post 6</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-7.jpg');">Post 7</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-8.jpg');">Post 8</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-9.jpg');">Post 9</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-10.jpg');">Post 10</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-11.jpg');">Post 11</div>
+      <div class="ig-post" style="background-image: url('tu-imagen-12.jpg');">Post 12</div>
+    </div>
+  </section>
+
+  <div class="spacer">
+    ¡Fin del Feed! Sigue bajando.
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Registramos ScrollTrigger en GSAP
+      gsap.registerPlugin(ScrollTrigger);
+
+      const track = document.querySelector(".horizontal-track");
+      const section = document.querySelector(".horizontal-section");
+
+      // Calculamos cuánto tiene que moverse la pista (hacia la izquierda = número negativo)
+      function getScrollAmount() {
+        let trackWidth = track.scrollWidth;
+        return -(trackWidth - window.innerWidth);
+      }
+
+      // Animación clásica: de posición inicial a la izquierda
+      gsap.to(track, {
+        x: getScrollAmount, // Se mueve en negativo (hacia la izquierda)
+        ease: "none", // Movimiento lineal y constante
+        scrollTrigger: {
+          trigger: section,
+          pin: true, // Clava la sección en la pantalla
+          start: "top top", // Empieza cuando el borde superior toca el techo
+          end: () => `+=${track.scrollWidth}`, // La duración depende del ancho total de tus posts
+          scrub: 1, // Suaviza el movimiento al soltar la rueda del ratón
+          invalidateOnRefresh: true // Recalcula las medidas si cambias el tamaño de la ventana
+        }
+      });
+    });
+  </script>
+</body>
+</html>

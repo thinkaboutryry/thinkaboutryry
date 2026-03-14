@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animación Scroll GSAP - Placeholders Verticales</title>
+  
+  <style>
+    /* 1. SISTEMA DE MEDIDAS FLUIDAS */
+    html {
+      font-size: calc(100vw / 1440);
+    }
+    body {
+      font-size: 16rem;
+      margin: 0;
+      background-color: #0a0a0a; /* Fondo muy oscuro */
+      color: #ffffff;
+      font-family: sans-serif;
+    }
+
+    /* 2. ESPACIO PARA HACER SCROLL (El "Escenario") */
+    /* Hacemos espacio arriba para que veas que la animación empieza al llegar aquí */
+    .espacio-relleno {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #111;
+      border-bottom: 1px solid #333;
+    }
+
+    .block.block--main {
+      height: 425vh; /* Esto define qué tan largo es el scroll de la animación */
+    }
+
+    .block__wrapper {
+      position: sticky;
+      top: 0;
+      padding: 0 24rem;
+      overflow: hidden;
+      height: 100vh; /* Se queda fijo ocupando toda la pantalla */
+    }
+
+    /* 3. TEXTO CENTRAL */
+    .content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100vh;
+      text-align: center;
+      z-index: 10;
+    }
+    .content__title {
+      font-size: 48rem;
+      margin-bottom: 16rem;
+    }
+    .content__description {
+      font-size: 18rem;
+      color: #aaa;
+      margin-bottom: 24rem;
+      max-width: 400rem;
+    }
+    .content__button {
+      padding: 12rem 24rem;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 4rem;
+      font-size: 16rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* 4. LA CUADRÍCULA Y LOS PLACEHOLDERS */
+    .gallery {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      width: 736rem;
+    }
+
+    .gallery__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 32rem;
+      row-gap: 40rem;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .gallery__item {
+      width: 100%;
+      aspect-ratio: 1080 / 1350; /* Proporción vertical 4:5 exacta */
+    }
+
+    /* Estilo del Placeholder */
+    .placeholder-box {
+      width: 100%;
+      height: 100%;
+      background-color: #1a1a1a;
+      border: 2px dashed #444;
+      border-radius: 8rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24rem;
+      color: #666;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <section class="espacio-relleno">
+    <h2>Haz scroll hacia abajo &darr;</h2>
+  </section>
+
+  <section class="block block--main">
+    <div class="block__wrapper">
+      
+      <div class="content">
+        <h2 class="content__title">Portafolio</h2>
+        <p class="content__description">Observa cómo la cuadrícula se expande a medida que bajas por la página.</p>
+        <button class="content__button">Ver Proyecto</button>
+      </div>
+      
+      <div class="gallery">
+        <ul class="gallery__grid">
+          <li class="gallery__item"><div class="placeholder-box">1</div></li>
+          <li class="gallery__item"><div class="placeholder-box">2</div></li>
+          <li class="gallery__item"><div class="placeholder-box">3</div></li>
+          <li class="gallery__item"><div class="placeholder-box">4</div></li>
+          <li class="gallery__item"><div class="placeholder-box">5</div></li>
+          <li class="gallery__item"><div class="placeholder-box">6</div></li>
+          <li class="gallery__item"><div class="placeholder-box">7</div></li>
+          <li class="gallery__item"><div class="placeholder-box">8</div></li>
+          <li class="gallery__item"><div class="placeholder-box">9</div></li>
+          <li class="gallery__item"><div class="placeholder-box">10</div></li>
+          <li class="gallery__item"><div class="placeholder-box">11</div></li>
+          <li class="gallery__item"><div class="placeholder-box">12</div></li>
+        </ul>
+      </div>
+      
+    </div>
+  </section>
+
+  <section class="espacio-relleno">
+    <h2>Fin de la animación</h2>
+  </section>
+
+  <script src="https://unpkg.com/lenis@1.1.2/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    function initSmoothScrolling() {
+      const lenis = new Lenis({
+        lerp: 0.08,
+        wheelMultiplier: 1.4,
+      });
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    class StickyGridScroll {
+      constructor() {
+        this.getElements();
+        this.initContent();
+        this.groupItemsByColumn();
+        this.addParallaxOnScroll();
+        this.animateTitleOnScroll();
+        this.animateGridOnScroll();
+      }
+
+      getElements() {
+        this.block = document.querySelector(".block--main");
+        if (this.block) {
+          this.wrapper = this.block.querySelector(".block__wrapper");
+          this.content = this.block.querySelector(".content");
+          this.title = this.block.querySelector(".content__title");
+          this.description = this.block.querySelector(".content__description");
+          this.button = this.block.querySelector(".content__button");
+          this.grid = this.block.querySelector(".gallery__grid");
+          this.items = this.block.querySelectorAll(".gallery__item");
+        }
+      }
+
+      initContent() {
+        if (this.description && this.button) {
+          gsap.set([this.description, this.button], { opacity: 0, pointerEvents: "none" });
+        }
+        if (this.content && this.title) {
+          const dy = (this.content.offsetHeight - this.title.offsetHeight) / 2;
+          this.titleOffsetY = (dy / this.content.offsetHeight) * 100;
+          gsap.set(this.title, { yPercent: this.titleOffsetY });
+        }
+      }
+
+      groupItemsByColumn() {
+        this.numColumns = 3;
+        this.columns = Array.from({ length: this.numColumns }, () => []);
+        this.items.forEach((item, index) => {
+            this.columns[index % this.numColumns].push(item);
+        });
+      }
+
+      animateGridOnScroll() {
+        const timeline = gsap.timeline({
+          scrollTrigger: {
+            trigger: this.block,
+            start: "top 25%", // La animación empieza cuando el bloque llega al 25% de la pantalla
+            end: "bottom bottom",
+            scrub: true,
+          },
+        });
+        
+        timeline
+          .add(this.gridRevealTimeline())
+          .add(this.gridZoomTimeline(), "-=0.6")
+          .add(() => this.toggleContent(timeline.scrollTrigger.direction === 1), "-=0.32");
+      }
+
+      gridRevealTimeline(columns = this.columns) {
+        const timeline = gsap.timeline();
+        const wh = window.innerHeight;
+        const dy = wh - (wh - this.grid.offsetHeight) / 2;
+        
+        columns.forEach((column, colIndex) => {
+          const fromTop = colIndex % 2 === 0;
+          timeline.from(column, {
+            y: dy * (fromTop ? -1 : 1),
+            stagger: {
+              each: 0.06,
+              from: fromTop ? "end" : "start",
+            },
+            ease: "power1.inOut",
+          }, "grid-reveal");
+        });
+        return timeline;
+      }
+
+      gridZoomTimeline(columns = this.columns) {
+        const timeline = gsap.timeline({ defaults: { duration: 1, ease: "power3.inOut" } });
+        
+        timeline.to(this.grid, { scale: 2.05 }); // Nivel de zoom de la cuadrícula
+        timeline.to(columns[0], { xPercent: -40 }, "<"); // Columna izq se mueve a la izq
+        timeline.to(columns[2], { xPercent: 40 }, "<"); // Columna der se mueve a la der
+        timeline.to(columns[1], {
+          yPercent: (index) => (index < Math.floor(columns[1].length / 2) ? -1 : 1) * 40,
+          duration: 0.5,
+          ease: "power1.inOut",
+        }, "-=0.5");
+        
+        return timeline;
+      }
+
+      toggleContent(isVisible = true) {
+        if (!this.title || !this.description || !this.button) return;
+        
+        gsap.timeline({ defaults: { overwrite: true } })
+          .to(this.title, {
+            yPercent: isVisible ? 0 : this.titleOffsetY,
+            duration: 0.7,
+            ease: "power2.inOut",
+          })
+          .to([this.description, this.button], {
+            opacity: isVisible ? 1 : 0,
+            duration: 0.4,
+            ease: `power1.${isVisible ? "inOut" : "out"}`,
+            pointerEvents: isVisible ? "all" : "none",
+          }, isVisible ? "-=90%" : "<");
+      }
+
+      addParallaxOnScroll() {
+        if (!this.block || !this.wrapper) return;
+        
+        gsap.from(this.wrapper, {
+          yPercent: -100,
+          ease: "none",
+          scrollTrigger: {
+            trigger: this.block,
+            start: "top bottom",
+            end: "top top",
+            scrub: true,
+          },
+        });
+      }
+
+      animateTitleOnScroll() {
+        if (!this.block || !this.title) return;
+        
+        gsap.from(this.title, {
+          opacity: 0,
+          duration: 0.7,
+          ease: "power1.out",
+          scrollTrigger: {
+            trigger: this.block,
+            start: "top 57%",
+            toggleActions: "play none none reset",
+          },
+        });
+      }
+    }
+
+    // Inicializamos cuando carga la página
+    document.addEventListener("DOMContentLoaded", () => {
+      initSmoothScrolling();
+      new StickyGridScroll();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ID Card Animada</title>
+<style>
+  /* Contenedor principal sin fondo para mantener la transparencia */
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent; 
+    font-family: 'Arial', sans-serif;
+  }
+
+  /* Contenedor de la animación colgante */
+  .hanging-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* El punto de origen de la animación es la parte superior central (el agarre) */
+    transform-origin: top center;
+    animation: swing 4s ease-in-out infinite;
+  }
+
+  /* Animación de balanceo suave */
+  @keyframes swing {
+    0% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+    100% { transform: rotate(-3deg); }
+  }
+
+  /* Cinta (Strap) */
+  .straps {
+    position: absolute;
+    top: -100px;
+    width: 80px;
+    height: 120px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1;
+  }
+
+  .strap {
+    width: 25px;
+    height: 150px;
+    background: linear-gradient(to bottom, #d9e2ec, #a2b4c6);
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  }
+
+  .strap.left {
+    transform: rotate(20deg) translateX(15px);
+  }
+
+  .strap.right {
+    transform: rotate(-20deg) translateX(-15px);
+  }
+
+  /* Tarjeta ID */
+  .id-card {
+    width: 280px;
+    height: 400px;
+    background: linear-gradient(135deg, #4A90E2 0%, #003366 100%);
+    border-radius: 12px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Hueco para el agarre de la cinta */
+  .card-hole {
+    width: 50px;
+    height: 12px;
+    background-color: transparent;
+    border: 3px solid #e0e0e0;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  /* Área blanca para la foto */
+  .photo-area {
+    width: 100%;
+    height: 200px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  /* Texto principal */
+  .card-text {
+    color: #ffffff;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* Etiqueta inferior (@usuario) */
+  .card-tag {
+    color: #ffffff;
+    font-size: 14px;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    padding: 5px 20px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+  <div class="hanging-container">
+    <div class="straps">
+      <div class="strap left"></div>
+      <div class="strap right"></div>
+    </div>
+
+    <div class="id-card">
+      <div class="card-hole"></div>
+      <div class="photo-area"></div>
+      <div class="card-text">
+        ¡ESTOY LISTO PARA<br>
+        DESBLOQUEAR TODO<br>
+        MI POTENCIAL!
+      </div>
+      <div class="card-tag">@thinkaboutryry</div>
+    </div>
+  </div>
+
+</body>
+</html>

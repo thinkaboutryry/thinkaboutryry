@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Fanzine 3D GSAP</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #1a1a1a; /* Fondo oscuro para resaltar */
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* EL ESCENARIO (Tamaño del fanzine cerrado) */
+    .fanzine-container {
+      position: relative;
+      width: 400px;
+      height: 600px;
+      perspective: 2500px; /* Profundidad 3D fuerte */
+    }
+
+    /* LA HOJA FÍSICA */
+    .sheet {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      transform-origin: left center; /* El doblez está a la izquierda */
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    /* CARAS DEL PAPEL (Frente y Revés) */
+    .face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden; /* Oculta la cara trasera al girar */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      box-shadow: inset -5px 0 20px rgba(0,0,0,0.1);
+      border: 1px solid #ddd;
+      
+      /* Preparado para tus imágenes dobles */
+      background-size: 200% 100%; 
+      background-repeat: no-repeat;
+    }
+
+    /* FRENTE */
+    .front {
+      transform: rotateY(0deg);
+      border-radius: 2px 8px 8px 2px;
+      background-color: #fafafa;
+    }
+
+    /* REVÉS */
+    .back {
+      transform: rotateY(180deg);
+      border-radius: 8px 2px 2px 8px;
+      background-color: #f0f0f0;
+    }
+
+    /* Las tapas rígidas tienen fondo normal */
+    .portada, .contraportada {
+      background-size: cover;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="fanzine-container">
+    
+    <div class="sheet">
+      <div class="face front portada" style="background-color: #fff;">Portada</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 1<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 1<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 2<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 2<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 3<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 3<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 4<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 4<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 5<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 5<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 6<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 6<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 7<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 7<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 8<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 8<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 9<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 9<br>(Mitad Der)</div>
+      <div class="face back" style="background-color: #fff; background-position: left;">Doble 10<br>(Mitad Izq)</div>
+    </div>
+
+    <div class="sheet">
+      <div class="face front" style="background-color: #fff; background-position: right;">Doble 10<br>(Mitad Der)</div>
+      <div class="face back contraportada" style="background-color: #fff;">Contraportada</div>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const sheets = document.querySelectorAll(".sheet");
+      const totalSheets = sheets.length;
+      
+      // 1. Configuramos el z-index inicial para que se apilen correctamente
+      sheets.forEach((sheet, index) => {
+        sheet.style.zIndex = totalSheets - index;
+      });
+      
+      // 2. Lógica del clic para girar
+      sheets.forEach((sheet, index) => {
+        sheet.addEventListener("click", () => {
+          
+          let isFlipped = sheet.classList.contains("flipped");
+
+          if (!isFlipped) {
+            // ABRIR PÁGINA
+            gsap.to(sheet, {
+              rotationY: -180,
+              duration: 1.5,
+              ease: "power2.inOut"
+            });
+            
+            // Cambiamos el z-index justo a la mitad del giro (0.75 seg)
+            gsap.delayedCall(0.75, () => {
+              sheet.style.zIndex = index + 1;
+            });
+            
+            sheet.classList.add("flipped");
+
+          } else {
+            // CERRAR PÁGINA
+            gsap.to(sheet, {
+              rotationY: 0,
+              duration: 1.5,
+              ease: "power2.inOut"
+            });
+            
+            // Restauramos el z-index a la mitad del giro
+            gsap.delayedCall(0.75, () => {
+              sheet.style.zIndex = totalSheets - index;
+            });
+            
+            sheet.classList.remove("flipped");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
