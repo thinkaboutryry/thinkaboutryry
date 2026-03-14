@@ -475,8 +475,28 @@ export default function SocialMediaProject() {
         <span className="text-sm font-medium">Volver</span>
       </motion.button>
 
+      {/* === MOBILE STATIC HERO (No Animation) === */}
+      <section className="md:hidden pt-32 pb-10 px-4 flex flex-col items-center text-center relative z-20">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-neutral-100 dark:bg-neutral-800/80 text-neutral-600 dark:text-neutral-300 text-xs font-semibold uppercase tracking-widest mb-6 border border-neutral-200 dark:border-neutral-700/50 shadow-sm">
+          <MousePointer2 size={14} />
+          <span>Colección</span>
+        </div>
+        <h1 className="text-4xl sm:text-[50px] font-bold tracking-tight text-neutral-900 dark:text-white mb-6 leading-[1.1] flex flex-col justify-center items-center gap-2">
+          <span>Diseño</span> <span className="font-light italic text-neutral-400 dark:text-neutral-500">Redes Sociales</span>
+        </h1>
+        <p className="text-base text-neutral-600 dark:text-neutral-300 font-light max-w-3xl mb-10">
+          Exploración de formatos visuales, estrategia y dirección de arte a través de diversos formatos: posts, historias, carruseles y videos. Desliza o selecciona un formato.
+        </p>
+        <button 
+          onClick={scrollToFirstProject}
+          className="px-8 py-4 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 font-bold rounded-full hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors shadow-lg border border-transparent"
+        >
+          Ver Proyecto
+        </button>
+      </section>
+
       {/* === HERO PRINCIPAL SCROLL ANIMATION (GSAP-style) === */}
-      <section ref={heroRef} className="relative h-[250vh] md:h-[400vh] bg-[#faf5ff] dark:bg-[#0a0510]">
+      <section ref={heroRef} className="hidden md:block relative h-[400vh] bg-[#faf5ff] dark:bg-[#0a0510]">
         <div className="sticky top-0 h-screen overflow-hidden flex items-center justify-center bg-[#faf5ff] dark:bg-[#0a0510]">
           
           {/* Fondo sutil tipo Spotlight Morado */}
